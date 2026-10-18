@@ -1,0 +1,196 @@
+{
+  "id": "com.derneonleon.better-aiming",
+  "name": "Better Aiming",
+  "version": "1.1.0",
+  "author": "derNeonLeon",
+  "description": "Modernizes staff and binocular aiming with velocity controls, per-spell aim modes, direct spell switching, and optional C-stick aim while moving.",
+  "compatibility": {
+    "abi": 2,
+    "port": {
+      "min": "0.5.8"
+    }
+  },
+  "optionFields": [
+    {
+      "id": "fireAimMode",
+      "type": "select",
+      "default": "free",
+      "name": "Fire Blaster Aim Mode",
+      "label": "Fire Blaster Aim Mode",
+      "description": "Vanilla keeps the original aiming behavior while still applying speed, range, and inversion settings.",
+      "options": [
+        {
+          "id": "vanilla",
+          "name": "Vanilla",
+          "label": "Vanilla"
+        },
+        {
+          "id": "free",
+          "name": "Free",
+          "label": "Free"
+        },
+        {
+          "id": "centered",
+          "name": "Centered",
+          "label": "Centered"
+        }
+      ]
+    },
+    {
+      "id": "freezeAimMode",
+      "type": "select",
+      "default": "free",
+      "name": "Freeze Blast Aim Mode",
+      "label": "Freeze Blast Aim Mode",
+      "description": "Vanilla keeps the original aiming behavior while still applying speed, range, and inversion settings.",
+      "options": [
+        {
+          "id": "vanilla",
+          "name": "Vanilla",
+          "label": "Vanilla"
+        },
+        {
+          "id": "free",
+          "name": "Free",
+          "label": "Free"
+        },
+        {
+          "id": "centered",
+          "name": "Centered",
+          "label": "Centered"
+        }
+      ]
+    },
+    {
+      "id": "freezeBlastCrosshair",
+      "type": "toggle",
+      "default": false,
+      "name": "Freeze Blast Crosshair",
+      "label": "Freeze Blast Crosshair",
+      "description": "Experimental: Reuses the Fire Blaster crosshair, so alignment may be imperfect."
+    },
+    {
+      "id": "directSpellSwitching",
+      "type": "toggle",
+      "default": true,
+      "name": "Direct Spell Switching",
+      "label": "Direct Spell Switching",
+      "description": "Switch directly between Fire Blaster and Freeze Blast while either spell is active."
+    },
+    {
+      "id": "aimWhileMoving",
+      "type": "toggle",
+      "default": false,
+      "name": "Move While Aiming",
+      "label": "Move While Aiming",
+      "description": "Experimental: In Free or Centered mode, move with the left stick and aim with the C-stick; walking has no leg animation."
+    },
+    {
+      "id": "blasterHudFix",
+      "type": "toggle",
+      "default": true,
+      "name": "Blaster HUD Fix",
+      "label": "Blaster HUD Fix",
+      "description": "Prevents the HUD from briefly disappearing when firing Fire Blaster or Freeze Blast."
+    },
+    {
+      "id": "aimSpeed",
+      "type": "slider",
+      "default": 1.0,
+      "min": 0.01,
+      "max": 5.0,
+      "step": 0.01,
+      "name": "Aim Speed",
+      "label": "Aim Speed"
+    },
+    {
+      "id": "aimVerticalRangeDegrees",
+      "type": "slider",
+      "default": 135,
+      "min": 0,
+      "max": 180,
+      "step": 1,
+      "name": "Aim Vertical Range (°)",
+      "label": "Aim Vertical Range (°)"
+    },
+    {
+      "id": "invertAimX",
+      "type": "toggle",
+      "default": false,
+      "name": "Invert Aim Horizontal",
+      "label": "Invert Aim Horizontal"
+    },
+    {
+      "id": "invertAimY",
+      "type": "toggle",
+      "default": true,
+      "name": "Invert Aim Vertical",
+      "label": "Invert Aim Vertical"
+    },
+    {
+      "id": "binocularMode",
+      "type": "select",
+      "default": "modern",
+      "name": "Binocular Controls",
+      "label": "Binocular Controls",
+      "description": "Vanilla keeps the original binocular behavior while still applying speed, range, and inversion settings.",
+      "options": [
+        {
+          "id": "vanilla",
+          "name": "Vanilla",
+          "label": "Vanilla"
+        },
+        {
+          "id": "modern",
+          "name": "Modern",
+          "label": "Modern"
+        }
+      ]
+    },
+    {
+      "id": "binocularSpeed",
+      "type": "slider",
+      "default": 1.0,
+      "min": 0.01,
+      "max": 5.0,
+      "step": 0.01,
+      "name": "Binocular Speed",
+      "label": "Binocular Speed"
+    },
+    {
+      "id": "binocularInertia",
+      "type": "slider",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 10.0,
+      "step": 0.01,
+      "name": "Binocular Inertia",
+      "label": "Binocular Inertia",
+      "description": "Adjusts matched horizontal and vertical inertia in Modern mode."
+    },
+    {
+      "id": "binocularVerticalRangeDegrees",
+      "type": "slider",
+      "default": 180,
+      "min": 0,
+      "max": 180,
+      "step": 1,
+      "name": "Binocular Vertical Range (°)",
+      "label": "Binocular Vertical Range (°)"
+    },
+    {
+      "id": "invertBinocularX",
+      "type": "toggle",
+      "default": false,
+      "name": "Invert Binocular Horizontal",
+      "label": "Invert Binocular Horizontal"
+    },
+    {
+      "id": "invertBinocularY",
+      "type": "toggle",
+      "default": true,
+      "name": "Invert Binocular Vertical",
+      "label": "Invert Binocular Vertical"
+    }
+  ]
+}
