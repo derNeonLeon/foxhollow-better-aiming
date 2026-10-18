@@ -1,6 +1,6 @@
 # Better Aiming
 
-Better Aiming modernizes staff and binocular aiming in the Foxhollow while keeping the original controls available as an option.
+Modernizes staff and binocular aiming with velocity controls, crosshair options, direct spell switching, and experimental C-stick aim while moving
 
 ## Features
 
