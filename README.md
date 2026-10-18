@@ -1,0 +1,75 @@
+# Better Aiming
+
+Better Aiming modernizes staff and binocular aiming in the Foxhollow while keeping the original controls available as an option.
+
+## Features
+
+- Independent `Vanilla`, `Free`, and `Centered` aim modes for Fire Blaster and Freeze Blast
+- `Vanilla` keeps the original aiming behavior while still allowing speed, vertical range, and axis inversion to be adjusted
+- Velocity-based aiming in `Free` and `Centered` modes with no automatic recentering when the stick is released
+- Optional modern binocular controls with matched horizontal and vertical inertia
+- Separate horizontal and vertical inversion for staff aiming and binoculars
+- Adjustable aiming speed and vertical range
+- Optional Freeze Blast crosshair
+- Direct switching between Fire Blaster and Freeze Blast while either spell is active
+- Optional C-stick aiming while moving
+- Optional Blaster HUD Fix to prevent the HUD from briefly disappearing while using Fire Blaster or Freeze Blast
+
+## Supported Platforms
+
+- Windows x64
+
+Other platforms are not currently listed as supported because they have not been tested yet.
+
+## Requirements
+
+- Foxhollow 0.5.8 or newer
+- A working Star Fox Adventures installation configured for Foxhollow
+- Windows x64
+
+## Installation
+
+1. Open the [latest GitHub release](../../releases/latest).
+2. Download the latest `better-aiming-<version>.zip` release archive.
+3. Open Foxhollow's `mods` directory.
+4. Create a folder named `com.derneonleon.better-aiming` inside the `mods` directory.
+5. Extract the contents of the downloaded ZIP directly into that folder.
+6. Start Foxhollow and enable/configure Better Aiming from the mod settings.
+
+The installed files should look like this:
+
+```text
+mods/
+└── com.derneonleon.better-aiming/
+    ├── mod.json
+    └── lib/
+        └── windows-amd64/
+            └── mod.dll
+```
+
+## Building on Windows
+
+Run `BUILD-WINDOWS.cmd` from the repository root.
+
+The script uses `FOXHOLLOW_SOURCE_DIR` when it points to an existing Foxhollow checkout. If no checkout is available, it downloads Foxhollow and its required submodules into `.deps`.
+
+Required build tools:
+
+- Visual Studio with Desktop development with C++
+- C++ Clang tools for Windows
+- CMake
+- Git
+
+The finished release archive is written to `dist/better-aiming-1.1.0.zip`.
+
+## Automated Builds
+
+The repository includes `.github/workflows/cross-platform-build.yml` for automated builds. Windows x64 is currently the only platform officially listed as supported and tested by this project.
+
+## AI Disclosure
+
+This project was created with AI assistance. AI was used during development for code generation, review, debugging, and project maintenance.
+
+## License
+
+CC0 1.0 Universal. See `LICENSE`.
