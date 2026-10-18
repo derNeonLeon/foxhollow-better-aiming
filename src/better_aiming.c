@@ -75,13 +75,13 @@ static void* gInstalledHookTargets[BETTER_HOOK_CAPACITY];
 static int gInstalledHookCount;
 
 typedef enum BetterAimMode {
-    BETTER_AIM_MODE_VANILLA = 0,
+    BETTER_AIM_MODE_ORIGINAL = 0,
     BETTER_AIM_MODE_FREE = 1,
     BETTER_AIM_MODE_CENTERED = 2
 } BetterAimMode;
 
 static BetterAimMode gFireAimMode = BETTER_AIM_MODE_FREE;
-static BetterAimMode gFreezeAimMode = BETTER_AIM_MODE_FREE;
+static BetterAimMode gFreezeAimMode = BETTER_AIM_MODE_ORIGINAL;
 static int gModernBinocularControls = 1;
 static int gInvertAimX;
 static int gInvertAimY = 1;
@@ -140,9 +140,13 @@ static s16 angle_add_scaled(s16 before, s16 after, f32 scale) {
     return (s16)(before + (s16)round_to_s32((f32)delta * scale));
 }
 
+static int is_original_mode_value(const char* value) {
+    return value != 0 && (string_equal(value, "original") || string_equal(value, "vanilla"));
+}
+
 static BetterAimMode parse_aim_mode(const char* value) {
-    if (value != 0 && string_equal(value, "vanilla")) {
-        return BETTER_AIM_MODE_VANILLA;
+    if (is_original_mode_value(value)) {
+        return BETTER_AIM_MODE_ORIGINAL;
     }
     if (value != 0 && string_equal(value, "centered")) {
         return BETTER_AIM_MODE_CENTERED;
@@ -152,9 +156,9 @@ static BetterAimMode parse_aim_mode(const char* value) {
 
 static void load_config(void) {
     gFireAimMode = parse_aim_mode(gHost->configString(gMod, "fireAimMode", "free"));
-    gFreezeAimMode = parse_aim_mode(gHost->configString(gMod, "freezeAimMode", "free"));
+    gFreezeAimMode = parse_aim_mode(gHost->configString(gMod, "freezeAimMode", "original"));
     const char* binocularMode = gHost->configString(gMod, "binocularMode", "modern");
-    gModernBinocularControls = binocularMode == 0 || !string_equal(binocularMode, "vanilla");
+    gModernBinocularControls = !is_original_mode_value(binocularMode);
     gInvertAimX = gHost->configBool(gMod, "invertAimX", 0);
     gInvertAimY = gHost->configBool(gMod, "invertAimY", 1);
     gInvertBinocularX = gHost->configBool(gMod, "invertBinocularX", 0);
@@ -229,15 +233,15 @@ static BetterAimVerticalLimits aim_vertical_limits(PlayerState* inner) {
         return limits;
     }
 
-    f32 vanillaNegative = -aim_pitch_degrees(inner, -1.0f);
-    f32 vanillaPositive = aim_pitch_degrees(inner, 1.0f);
-    f32 vanillaRange = vanillaNegative + vanillaPositive;
-    if (vanillaRange <= 0.0001f) {
+    f32 originalNegative = -aim_pitch_degrees(inner, -1.0f);
+    f32 originalPositive = aim_pitch_degrees(inner, 1.0f);
+    f32 originalRange = originalNegative + originalPositive;
+    if (originalRange <= 0.0001f) {
         return limits;
     }
 
-    f32 targetRange = requestedRange * (vanillaRange / 103.0f);
-    f32 negativeDegrees = targetRange * (vanillaNegative / vanillaRange);
+    f32 targetRange = requestedRange * (originalRange / 103.0f);
+    f32 negativeDegrees = targetRange * (originalNegative / originalRange);
     f32 positiveDegrees = targetRange - negativeDegrees;
     const f32 maxSideDegrees = 89.9945f;
 
@@ -289,7 +293,7 @@ static int is_blaster_spell(s16 item) {
 
 static BetterAimMode current_staff_aim_mode(void) {
     if (gPlayerSelectedItem == 0) {
-        return BETTER_AIM_MODE_VANILLA;
+        return BETTER_AIM_MODE_ORIGINAL;
     }
     if (*gPlayerSelectedItem == GAMEBIT_STAFF_ABILITY_FIRE_BLASTER) {
         return gFireAimMode;
@@ -297,11 +301,11 @@ static BetterAimMode current_staff_aim_mode(void) {
     if (*gPlayerSelectedItem == GAMEBIT_STAFF_ABILITY_FREEZE_BLAST) {
         return gFreezeAimMode;
     }
-    return BETTER_AIM_MODE_VANILLA;
+    return BETTER_AIM_MODE_ORIGINAL;
 }
 
 static int freeze_crosshair_requested(void) {
-    return gFreezeAimMode != BETTER_AIM_MODE_VANILLA && gFreezeBlastCrosshair &&
+    return gFreezeAimMode != BETTER_AIM_MODE_ORIGINAL && gFreezeBlastCrosshair &&
            gPlayerSelectedItem != 0 && *gPlayerSelectedItem == GAMEBIT_STAFF_ABILITY_FREEZE_BLAST;
 }
 
@@ -389,7 +393,7 @@ static int is_blaster_active_now(void) {
 }
 
 static int should_capture_cstick(void) {
-    return gAimWhileMoving && is_staff_aiming_now() && current_staff_aim_mode() != BETTER_AIM_MODE_VANILLA;
+    return gAimWhileMoving && is_staff_aiming_now() && current_staff_aim_mode() != BETTER_AIM_MODE_ORIGINAL;
 }
 
 static s8 better_pad_get_cx(int port) {
@@ -442,7 +446,7 @@ static int better_player_state_aim_staff(GameObject* obj, PlayerState* state, f3
     BetterAimMode mode = current_staff_aim_mode();
     f32 rawAimX = savedMoveX;
     f32 rawAimZ = savedMoveZ;
-    if (mode != BETTER_AIM_MODE_VANILLA && gAimWhileMoving && gPadGetCX != 0 && gPadGetCY != 0) {
+    if (mode != BETTER_AIM_MODE_ORIGINAL && gAimWhileMoving && gPadGetCX != 0 && gPadGetCY != 0) {
         rawAimX = (f32)gPadGetCX(0);
         rawAimZ = (f32)gPadGetCY(0);
     }
@@ -452,7 +456,7 @@ static int better_player_state_aim_staff(GameObject* obj, PlayerState* state, f3
     if (!activeMove) {
         int result = gPlayerStateAimStaff(obj, state, fv);
         BetterAimMode postMode = current_staff_aim_mode();
-        if (postMode != BETTER_AIM_MODE_VANILLA || freeze_crosshair_requested()) {
+        if (postMode != BETTER_AIM_MODE_ORIGINAL || freeze_crosshair_requested()) {
             set_aim_screen(inner, postMode, freeze_crosshair_requested());
         }
         return result;
@@ -460,7 +464,7 @@ static int better_player_state_aim_staff(GameObject* obj, PlayerState* state, f3
 
     BetterAimVerticalLimits verticalLimits = aim_vertical_limits(inner);
 
-    if (mode == BETTER_AIM_MODE_VANILLA) {
+    if (mode == BETTER_AIM_MODE_ORIGINAL) {
         f32 targetX = inputX;
         f32 targetZ = inputZ < 0.0f ? inputZ * verticalLimits.negative : inputZ * verticalLimits.positive;
         f32 rate = 0.1f * gAimSpeed;
@@ -549,7 +553,7 @@ static f32 centered_pitch(PlayerState* inner) {
 static void better_force_behind_update(CameraObject* camera) {
     GameObject* target = (GameObject*)camera->anim.targetObj;
     BetterAimMode mode = current_staff_aim_mode();
-    if (!is_staff_aim_camera(target) || mode == BETTER_AIM_MODE_VANILLA) {
+    if (!is_staff_aim_camera(target) || mode == BETTER_AIM_MODE_ORIGINAL) {
         gCameraModeForceBehindUpdate(camera);
         return;
     }
@@ -598,7 +602,7 @@ static void apply_binocular_focus_rotation(CameraObject* camera) {
     }
 }
 
-static void better_first_person_controls_vanilla(CameraObject* camera, CameraModeViewfinderState* vf) {
+static void better_first_person_controls_original(CameraObject* camera, CameraModeViewfinderState* vf) {
     f32 oldYaw = camera->anim.rotX;
     f32 oldPitch = camera->anim.rotY;
     f32 oldYawSpeed = vf->yawSpeed;
@@ -644,7 +648,7 @@ static void better_first_person_controls(CameraObject* camera) {
     if (!gModernBinocularControls) {
         gBinocularPitchSpeed = 0.0f;
         gLastBinocularCamera = 0;
-        better_first_person_controls_vanilla(camera, vf);
+        better_first_person_controls_original(camera, vf);
         return;
     }
 

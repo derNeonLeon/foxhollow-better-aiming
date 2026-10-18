@@ -7,7 +7,7 @@ set "DEPS=%PROJ%\.deps"
 set "BUILD=%PROJ%\build-windows-x64"
 set "OUT=%PROJ%\dist"
 set "STAGE=%BUILD%\stage"
-set "VERSION=1.1.0"
+set "VERSION=1.1.1"
 
 for /f "usebackq delims=" %%V in (`powershell -NoProfile -Command "$j = Get-Content -Raw '%PROJ%\mod.json' ^| ConvertFrom-Json; $j.version" 2^>nul`) do set "VERSION=%%V"
 set "ARCHIVE=%OUT%\better-aiming-%VERSION%.zip"

@@ -1,11 +1,11 @@
 # Better Aiming
 
-Modernizes staff and binocular aiming with velocity controls, crosshair options, direct spell switching, and experimental C-stick aim while moving
+Modernizes staff and binocular aiming with velocity controls, crosshair options, direct spell switching, and optional C-stick aim while moving.
 
 ## Features
 
-- Independent `Vanilla`, `Free`, and `Centered` aim modes for Fire Blaster and Freeze Blast
-- `Vanilla` keeps the original aiming behavior while still allowing speed, vertical range, and axis inversion to be adjusted
+- Independent `Original`, `Free`, and `Centered` aim modes for Fire Blaster and Freeze Blast
+- `Original` keeps the original aiming behavior while still allowing speed, vertical range, and axis inversion to be adjusted
 - Velocity-based aiming in `Free` and `Centered` modes with no automatic recentering when the stick is released
 - Optional modern binocular controls with matched horizontal and vertical inertia
 - Separate horizontal and vertical inversion for staff aiming and binoculars
@@ -17,15 +17,18 @@ Modernizes staff and binocular aiming with velocity controls, crosshair options,
 
 ## Supported Platforms
 
-- Windows x64
+Tested and supported:
 
-Other platforms are not currently listed as supported because they have not been tested yet.
+- Windows x64
+- macOS arm64 (Apple Silicon)
+
+Automated builds are also produced for additional platforms, but they are not currently listed as supported because they have not been tested.
 
 ## Requirements
 
 - Foxhollow 0.5.8 or newer
 - A working Star Fox Adventures installation configured for Foxhollow
-- Windows x64
+- Windows x64 or macOS arm64 for a tested configuration
 
 ## Installation
 
@@ -34,18 +37,18 @@ Other platforms are not currently listed as supported because they have not been
 3. Open Foxhollow's `mods` directory.
 4. Create a folder named `com.derneonleon.better-aiming` inside the `mods` directory.
 5. Extract the contents of the downloaded ZIP directly into that folder.
-6. Start Foxhollow and enable/configure Better Aiming from the mod settings.
+6. Start Foxhollow and configure Better Aiming from the mod settings.
 
-The installed files should look like this:
+The installed files should begin like this:
 
 ```text
 mods/
 └── com.derneonleon.better-aiming/
     ├── mod.json
     └── lib/
-        └── windows-amd64/
-            └── mod.dll
 ```
+
+The release archive contains the available platform builds inside `lib/`.
 
 ## Building on Windows
 
@@ -60,11 +63,15 @@ Required build tools:
 - CMake
 - Git
 
-The finished release archive is written to `dist/better-aiming-1.1.0.zip`.
+The finished release archive is written to `dist/better-aiming-1.1.1.zip`.
 
 ## Automated Builds
 
-The repository includes `.github/workflows/cross-platform-build.yml` for automated builds. Windows x64 is currently the only platform officially listed as supported and tested by this project.
+The repository includes `.github/workflows/cross-platform-build.yml` for automated cross-platform builds.
+
+## Support
+
+If you want to support the project, you can donate on [Ko-fi](https://ko-fi.com/derneonleon).
 
 ## AI Disclosure
 

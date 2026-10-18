@@ -1,7 +1,7 @@
 {
   "id": "com.derneonleon.better-aiming",
   "name": "Better Aiming",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "derNeonLeon",
   "description": "Modernizes staff and binocular aiming with velocity controls, per-spell aim modes, direct spell switching, and optional C-stick aim while moving.",
   "compatibility": {
@@ -17,12 +17,12 @@
       "default": "free",
       "name": "Fire Blaster Aim Mode",
       "label": "Fire Blaster Aim Mode",
-      "description": "Vanilla keeps the original aiming behavior while still applying speed, range, and inversion settings.",
+      "description": "Original keeps the original aiming behavior while still applying speed, range, and inversion settings.",
       "options": [
         {
-          "id": "vanilla",
-          "name": "Vanilla",
-          "label": "Vanilla"
+          "id": "original",
+          "name": "Original",
+          "label": "Original"
         },
         {
           "id": "free",
@@ -39,15 +39,15 @@
     {
       "id": "freezeAimMode",
       "type": "select",
-      "default": "free",
+      "default": "original",
       "name": "Freeze Blast Aim Mode",
       "label": "Freeze Blast Aim Mode",
-      "description": "Vanilla keeps the original aiming behavior while still applying speed, range, and inversion settings.",
+      "description": "Original keeps the original aiming behavior while still applying speed, range, and inversion settings.",
       "options": [
         {
-          "id": "vanilla",
-          "name": "Vanilla",
-          "label": "Vanilla"
+          "id": "original",
+          "name": "Original",
+          "label": "Original"
         },
         {
           "id": "free",
@@ -110,8 +110,8 @@
       "min": 0,
       "max": 180,
       "step": 1,
-      "name": "Aim Vertical Range (°)",
-      "label": "Aim Vertical Range (°)"
+      "name": "Aim Vertical Range (\u00b0)",
+      "label": "Aim Vertical Range (\u00b0)"
     },
     {
       "id": "invertAimX",
@@ -133,12 +133,12 @@
       "default": "modern",
       "name": "Binocular Controls",
       "label": "Binocular Controls",
-      "description": "Vanilla keeps the original binocular behavior while still applying speed, range, and inversion settings.",
+      "description": "Original keeps the original binocular behavior while still applying speed, range, and inversion settings.",
       "options": [
         {
-          "id": "vanilla",
-          "name": "Vanilla",
-          "label": "Vanilla"
+          "id": "original",
+          "name": "Original",
+          "label": "Original"
         },
         {
           "id": "modern",
@@ -175,8 +175,8 @@
       "min": 0,
       "max": 180,
       "step": 1,
-      "name": "Binocular Vertical Range (°)",
-      "label": "Binocular Vertical Range (°)"
+      "name": "Binocular Vertical Range (\u00b0)",
+      "label": "Binocular Vertical Range (\u00b0)"
     },
     {
       "id": "invertBinocularX",
