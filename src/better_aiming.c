@@ -5,10 +5,11 @@
 #include "main/camera_object.h"
 #include "main/dll/dll_0044_cameramodeviewfinder.h"
 #include "main/dll/dll_0052_cameramodeforcebehind.h"
+#include "main/dll/ARW/dll_029A_arwarwing.h"
 #include "main/dll/player_state.h"
 #include "main/gamebit_ids.h"
 
-#define BETTER_HOOK_CAPACITY 9
+#define BETTER_HOOK_CAPACITY 13
 
 typedef int (*PlayerStateAimStaffFn)(GameObject*, PlayerState*, f32);
 typedef void (*CameraModeForceBehindUpdateFn)(CameraObject*);
@@ -34,6 +35,8 @@ typedef void (*MatrixTransformVectorFn)(const f32*, const f32*, f32*);
 typedef void (*GameUIHudDrawFn)(int, int, int);
 typedef int (*MinimapUpdateFn)(void);
 typedef void (*CameraApplyFullViewportFn)(void);
+typedef void (*ArwingReadControlsFn)(GameObject*, ArwingState*);
+typedef void (*CloudRunnerUpdateFn)(GameObject*);
 
 static FhMod* gMod;
 static const FhModHost* gHost;
@@ -63,6 +66,8 @@ static MatrixTransformVectorFn gMatrixTransformVector;
 static GameUIHudDrawFn gGameUIHudDraw;
 static MinimapUpdateFn gMinimapUpdate;
 static CameraApplyFullViewportFn gCameraApplyFullViewport;
+static ArwingReadControlsFn gArwingReadControls;
+static CloudRunnerUpdateFn gCloudRunnerUpdate;
 static f32* gTimeDelta;
 static CameraModeViewfinderState** gViewfinderState;
 static s16* gPlayerSelectedItem;
@@ -91,11 +96,15 @@ static int gFreezeBlastCrosshair;
 static int gDirectSpellSwitching = 1;
 static int gAimWhileMoving;
 static int gBlasterHudFix = 1;
+static int gInvertFlightX;
+static int gInvertFlightY;
+static int gFlightInputContext;
 static f32 gAimSpeed = 1.0f;
 static f32 gAimVerticalRangeDegrees = 135.0f;
 static f32 gBinocularSpeed = 1.0f;
 static f32 gBinocularInertia = 1.0f;
 static f32 gBinocularVerticalRangeDegrees = 180.0f;
+static f32 gFlightSensitivity = 1.0f;
 static f32 gBinocularPitchSpeed;
 static CameraObject* gLastBinocularCamera;
 static uint64_t gLastBinocularFrame;
@@ -167,12 +176,15 @@ static void load_config(void) {
     gDirectSpellSwitching = gHost->configBool(gMod, "directSpellSwitching", 1);
     gAimWhileMoving = gHost->configBool(gMod, "aimWhileMoving", 0);
     gBlasterHudFix = gHost->configBool(gMod, "blasterHudFix", 1);
+    gInvertFlightX = gHost->configBool(gMod, "invertFlightX", 0);
+    gInvertFlightY = gHost->configBool(gMod, "invertFlightY", 0);
     gAimSpeed = clampf_local(gHost->configFloat(gMod, "aimSpeed", 1.0f), 0.01f, 5.0f);
     gAimVerticalRangeDegrees = clampf_local(gHost->configFloat(gMod, "aimVerticalRangeDegrees", 135.0f), 0.0f, 180.0f);
     gBinocularSpeed = clampf_local(gHost->configFloat(gMod, "binocularSpeed", 1.0f), 0.01f, 5.0f);
     gBinocularInertia = clampf_local(gHost->configFloat(gMod, "binocularInertia", 1.0f), 0.0f, 10.0f);
     gBinocularVerticalRangeDegrees =
         clampf_local(gHost->configFloat(gMod, "binocularVerticalRangeDegrees", 180.0f), 0.0f, 180.0f);
+    gFlightSensitivity = clampf_local(gHost->configFloat(gMod, "flightSensitivity", 1.0f), 0.1f, 2.0f);
 }
 
 static f32 aim_pitch_for_input(PlayerState* inner, f32 a) {
@@ -394,6 +406,52 @@ static int is_blaster_active_now(void) {
 
 static int should_capture_cstick(void) {
     return gAimWhileMoving && is_staff_aiming_now() && current_staff_aim_mode() != BETTER_AIM_MODE_ORIGINAL;
+}
+
+enum {
+    FLIGHT_INPUT_NONE = 0,
+    FLIGHT_INPUT_ARWING = 1,
+    FLIGHT_INPUT_CLOUDRUNNER = 2
+};
+
+static s8 apply_flight_input(s8 value, int inverted) {
+    f32 limit = gFlightInputContext == FLIGHT_INPUT_ARWING ? 72.0f : 70.0f;
+    f32 scaled = (f32)value * gFlightSensitivity;
+    if (inverted) {
+        scaled = -scaled;
+    }
+    scaled = clampf_local(scaled, -limit, limit);
+    return (s8)round_to_s32(scaled);
+}
+
+static s8 better_pad_get_stick_x(int port) {
+    s8 value = gPadGetStickX(port);
+    if (gFlightInputContext == FLIGHT_INPUT_NONE) {
+        return value;
+    }
+    return apply_flight_input(value, gInvertFlightX);
+}
+
+static s8 better_pad_get_stick_y(int port) {
+    s8 value = gPadGetStickY(port);
+    if (gFlightInputContext == FLIGHT_INPUT_NONE) {
+        return value;
+    }
+    return apply_flight_input(value, gInvertFlightY);
+}
+
+static void better_arwing_read_controls(GameObject* obj, ArwingState* state) {
+    int previousContext = gFlightInputContext;
+    gFlightInputContext = FLIGHT_INPUT_ARWING;
+    gArwingReadControls(obj, state);
+    gFlightInputContext = previousContext;
+}
+
+static void better_cloudrunner_update(GameObject* obj) {
+    int previousContext = gFlightInputContext;
+    gFlightInputContext = FLIGHT_INPUT_CLOUDRUNNER;
+    gCloudRunnerUpdate(obj);
+    gFlightInputContext = previousContext;
 }
 
 static s8 better_pad_get_cx(int port) {
@@ -801,6 +859,7 @@ static int fail_initialize(void) {
     gHost = 0;
     gLastBinocularCamera = 0;
     gBinocularPitchSpeed = 0.0f;
+    gFlightInputContext = FLIGHT_INPUT_NONE;
     return FH_MOD_ERROR;
 }
 
@@ -812,6 +871,7 @@ FH_MOD_EXPORT int fh_mod_initialize(FhMod* mod, const FhModHost* host) {
     gMod = mod;
     gHost = host;
     gInstalledHookCount = 0;
+    gFlightInputContext = FLIGHT_INPUT_NONE;
     load_config();
 
     gTimeDelta = (f32*)resolve_required("timeDelta");
@@ -851,6 +911,20 @@ FH_MOD_EXPORT int fh_mod_initialize(FhMod* mod, const FhModHost* host) {
         return fail_initialize();
     }
 
+    if (install_hook("padGetStickX", (void*)better_pad_get_stick_x, (void**)&gPadGetStickX) != FH_MOD_OK) {
+        return fail_initialize();
+    }
+    if (install_hook("padGetStickY", (void*)better_pad_get_stick_y, (void**)&gPadGetStickY) != FH_MOD_OK) {
+        return fail_initialize();
+    }
+    if (install_hook("arwarwing_readControls", (void*)better_arwing_read_controls,
+                     (void**)&gArwingReadControls) != FH_MOD_OK) {
+        return fail_initialize();
+    }
+    if (install_hook("SB_CloudRunner_update", (void*)better_cloudrunner_update,
+                     (void**)&gCloudRunnerUpdate) != FH_MOD_OK) {
+        return fail_initialize();
+    }
     if (install_hook("padGetCX", (void*)better_pad_get_cx, (void**)&gPadGetCX) != FH_MOD_OK) {
         return fail_initialize();
     }
@@ -899,5 +973,6 @@ FH_MOD_EXPORT void fh_mod_shutdown(FhMod* mod) {
         gHost = 0;
         gLastBinocularCamera = 0;
         gBinocularPitchSpeed = 0.0f;
+        gFlightInputContext = FLIGHT_INPUT_NONE;
     }
 }

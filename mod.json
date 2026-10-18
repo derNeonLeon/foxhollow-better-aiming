@@ -1,9 +1,9 @@
 {
   "id": "com.derneonleon.better-aiming",
   "name": "Better Aiming",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "derNeonLeon",
-  "description": "Modernizes staff and binocular aiming with velocity controls, per-spell aim modes, direct spell switching, and optional C-stick aim while moving.",
+  "description": "Modernizes staff, binocular, and flight controls with velocity aiming, per-spell aim modes, direct spell switching, and optional C-stick aim while moving.",
   "compatibility": {
     "abi": 2,
     "port": {
@@ -110,8 +110,8 @@
       "min": 0,
       "max": 180,
       "step": 1,
-      "name": "Aim Vertical Range (\u00b0)",
-      "label": "Aim Vertical Range (\u00b0)"
+      "name": "Aim Vertical Range (°)",
+      "label": "Aim Vertical Range (°)"
     },
     {
       "id": "invertAimX",
@@ -165,8 +165,7 @@
       "max": 10.0,
       "step": 0.01,
       "name": "Binocular Inertia",
-      "label": "Binocular Inertia",
-      "description": "Adjusts matched horizontal and vertical inertia in Modern mode."
+      "label": "Binocular Inertia"
     },
     {
       "id": "binocularVerticalRangeDegrees",
@@ -175,8 +174,8 @@
       "min": 0,
       "max": 180,
       "step": 1,
-      "name": "Binocular Vertical Range (\u00b0)",
-      "label": "Binocular Vertical Range (\u00b0)"
+      "name": "Binocular Vertical Range (°)",
+      "label": "Binocular Vertical Range (°)"
     },
     {
       "id": "invertBinocularX",
@@ -191,6 +190,30 @@
       "default": true,
       "name": "Invert Binocular Vertical",
       "label": "Invert Binocular Vertical"
+    },
+    {
+      "id": "invertFlightX",
+      "type": "toggle",
+      "default": false,
+      "name": "Invert Flight Horizontal",
+      "label": "Invert Flight Horizontal"
+    },
+    {
+      "id": "invertFlightY",
+      "type": "toggle",
+      "default": false,
+      "name": "Invert Flight Vertical",
+      "label": "Invert Flight Vertical"
+    },
+    {
+      "id": "flightSensitivity",
+      "type": "slider",
+      "default": 1.0,
+      "min": 0.1,
+      "max": 2.0,
+      "step": 0.01,
+      "name": "Flight Sensitivity",
+      "label": "Flight Sensitivity"
     }
   ]
 }

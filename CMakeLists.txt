@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(BetterAiming LANGUAGES C VERSION 1.1.1)
+project(BetterAiming LANGUAGES C VERSION 1.2.0)
 
 set(FOXHOLLOW_SOURCE_DIR "" CACHE PATH "Path to a Foxhollow source checkout")
 set(BETTER_AIMING_PLATFORM "" CACHE STRING "Foxhollow platform directory override")

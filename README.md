@@ -9,6 +9,7 @@ Modernizes staff and binocular aiming with velocity controls, crosshair options,
 - Velocity-based aiming in `Free` and `Centered` modes with no automatic recentering when the stick is released
 - Optional modern binocular controls with matched horizontal and vertical inertia
 - Separate horizontal and vertical inversion for staff aiming and binoculars
+- Shared flight sensitivity and axis inversion for Arwing and CloudRunner controls
 - Adjustable aiming speed and vertical range
 - Optional Freeze Blast crosshair
 - Direct switching between Fire Blaster and Freeze Blast while either spell is active
@@ -63,7 +64,7 @@ Required build tools:
 - CMake
 - Git
 
-The finished release archive is written to `dist/better-aiming-1.1.1.zip`.
+The finished release archive is written to `dist/better-aiming-1.2.0.zip`.
 
 ## Automated Builds
 
@@ -71,7 +72,7 @@ The repository includes `.github/workflows/cross-platform-build.yml` for automat
 
 ## Support
 
-If you want to support the project, you can donate on [Ko-fi](https://ko-fi.com/derneonleon).
+If you want to support my projects, you can donate on [Ko-fi](https://ko-fi.com/derneonleon).
 
 ## AI Disclosure
 
