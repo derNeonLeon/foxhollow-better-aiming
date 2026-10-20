@@ -27,7 +27,7 @@ Automated builds are also produced for additional platforms, but they are not cu
 
 ## Requirements
 
-- Foxhollow 0.5.8 or newer
+- Foxhollow 1.0.20 or newer
 - A working Star Fox Adventures installation configured for Foxhollow
 - Windows x64 or macOS arm64 for a tested configuration
 
